@@ -1,2 +1,2 @@
 # resuable-workflows
-Reusable workflows from other repositories
+Reusable workflows to use from  from other repositories
