@@ -4,6 +4,10 @@ name: build-push-docker-image
 on:
  workflow_call:
   inputs:
+    docker_file_path:
+      required: true
+      description: 'Path to the Dockerfile'
+      type: string
     repository_name:
       required: true
       description: 'Name of the repository where the image will be pushed'
@@ -43,4 +47,4 @@ jobs:
   
     - name: Build and push Docker image
       run: |
-        docker buildx build -t ${{inputs.namespace}}/${{inputs.repository_name}}:${{inputs.version}} -t ${{inputs.namespace}}/${{inputs.repository_name}}:latest -f ./Pub/Dockerfile --push .
+        docker buildx build -t ${{inputs.namespace}}/${{inputs.repository_name}}:${{inputs.version}} -t ${{inputs.namespace}}/${{inputs.repository_name}}:latest -f ${{inputs.docker_file_path}} --push .
