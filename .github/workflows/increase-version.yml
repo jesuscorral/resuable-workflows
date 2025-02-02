@@ -1,0 +1,34 @@
+# This workflow increase the version of the image by incrementing the patch version number by one
+
+name: increase-version
+
+on:
+ workflow_call:
+  inputs:
+    current_version:
+      required: true
+      description: 'Current version of the image'
+      type: string
+
+jobs:
+  increase-version:
+    runs-on: ubuntu-latest
+
+    outputs:
+      new_version: ${{ steps.increase-version.outputs.new_version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Increase version
+        id: increase-version
+        run: |
+          LATEST_VERSION=$(echo ${{ inputs.current_version }})
+          IFS='.' read -r -a VERSION_PARTS <<< "$LATEST_VERSION"
+          MAJOR=${VERSION_PARTS[0]}
+          MINOR=${VERSION_PARTS[1]}
+          PATCH=${VERSION_PARTS[2]}
+          NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+          echo "New version: $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT  
