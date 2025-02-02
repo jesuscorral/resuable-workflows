@@ -21,6 +21,11 @@ on:
       required: true
       description: 'Docker Hub password'
 
+  outputs:
+    latest_version:
+      description: 'Latest version of the Docker image'
+      value: ${{ jobs.get-latest-version.outputs.latest_version }}
+
 jobs:
   get-latest-version:
     runs-on: ubuntu-latest

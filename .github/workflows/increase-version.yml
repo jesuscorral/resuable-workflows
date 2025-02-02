@@ -9,6 +9,10 @@ on:
       required: true
       description: 'Current version of the image'
       type: string
+  outputs:
+    new_version:
+      description: 'New version of the image'
+      value: ${{ jobs.increase-version.outputs.new_version }}
 
 jobs:
   increase-version:
