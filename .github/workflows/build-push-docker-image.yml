@@ -1,29 +1,50 @@
 # This is a workflow to build and push a docker image
-
 name: build-push-docker-image
 
-# Controls when the workflow will run
 on:
  workflow_call:
+  inputs:
+    tag:
+      required: true
+      description: 'Docker image tag'
+      type: string
+    repository_name:
+      required: true
+      description: 'Name of the repository where the image will be pushed'
+      type: string
+    namespace:
+      required: true
+      description: 'Namespace from Docker Hub where the image will be pushed'
+      type: string
+    version:
+      required: true
+      description: 'Version of the image'
+      type: string
+  secrets:
+    username:
+      required: true
+      description: 'Docker Hub username'
+    password:
+      required: true
+      description: 'Docker Hub password'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+    - name: Checkout repository
+      uses: actions/checkout@v2
+  
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+  
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+  
+    - name: Build and push Docker image
+      run: |
+        docker buildx build -t ${{inputs.namespace}}/${{inputs.repository_name}}:${{inputs.version}} -t ${{inputs.namespace}}/${{inputs.repository_name}}:latest -f ./Pub/Dockerfile --push .
