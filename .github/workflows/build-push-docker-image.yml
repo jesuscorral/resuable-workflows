@@ -4,10 +4,6 @@ name: build-push-docker-image
 on:
  workflow_call:
   inputs:
-    tag:
-      required: true
-      description: 'Docker image tag'
-      type: string
     repository_name:
       required: true
       description: 'Name of the repository where the image will be pushed'
